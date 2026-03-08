@@ -99,8 +99,8 @@ def get_gt_bboxes(df_frame):
     obstacle_clusters = compute_boxes.cluster_obstacles(df_frame)
     for cluster in obstacle_clusters:
         bbox  = cluster["bbox"]
-        # GT = VERT vif → "ce qu'il y a vraiment"
-        color = [0.0, 1.0, 0.0]
+        # GT = blanc → facile à distinguer des prédictions colorées
+        color = [1.0, 1.0, 1.0]
         ls = make_bbox_lineset(
             bbox["cx"], bbox["cy"], bbox["cz"],
             bbox["w"],  bbox["l"],  bbox["h"],
@@ -133,8 +133,8 @@ def get_pred_bboxes(pred_df, pose):
         if class_id not in CLASS_COLORS:
             continue
 
-        # Prédiction = ROUGE vif → "ce que le modèle prédit"
-        pred_color = [1.0, 1.0, 0.0]
+        # Prédiction = couleur officielle de la classe
+        pred_color = CLASS_COLORS.get(class_id, [1.0, 1.0, 0.0])
 
         ls = make_bbox_lineset(
             row["bbox_center_x"], row["bbox_center_y"], row["bbox_center_z"],
@@ -157,8 +157,11 @@ def get_pred_bboxes(pred_df, pose):
 def print_legend():
     print("\n=== LÉGENDE ===")
     print("Points colorés  → couleurs RGB originales du dataset")
-    print("Bbox VERTE      → Ground Truth (ce qu'il y a vraiment)")
-    print("Bbox ROUGE      → Prédictions du modèle")
+    print("Bbox BLANCHE    → Ground Truth")
+    print("Bbox BLEUE      → Antenna      (class 0)")
+    print("Bbox ORANGE     → Cable        (class 1)")
+    print("Bbox VIOLETTE   → Electric pole (class 2)")
+    print("Bbox VERTE      → Wind turbine  (class 3)")
     print()
 
 
